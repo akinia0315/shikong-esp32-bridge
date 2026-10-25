@@ -1,0 +1,6 @@
+# 只用协议/合排（shikong.proto、shikong.schedule）不需要装任何东西。
+# ESP32 桥的服务端：
+fastapi>=0.110
+uvicorn>=0.27
+# 跑 tests/test_server.py：
+httpx>=0.27

@@ -1,0 +1,21 @@
+menu "Shikong bridge"
+
+config TOY_DEFAULT_URL
+    string "Default backend base URL"
+    default ""
+    help
+        Pre-filled in the provisioning form. Overridable at runtime.
+
+config TOY_AP_SSID
+    string "Provisioning access point name"
+    default "Shikong-Bridge"
+
+config TOY_BUTTON_GPIO
+    int "Emergency-stop button GPIO (BOOT button)"
+    default 9
+
+config TOY_POLL_WAIT_SECONDS
+    int "Long-poll hold time requested from the server"
+    default 20
+
+endmenu

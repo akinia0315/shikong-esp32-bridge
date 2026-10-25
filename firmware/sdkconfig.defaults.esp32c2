@@ -1,0 +1,5 @@
+# ESP32-C2 default build assumes a 40 MHz crystal; use sdkconfig.c2-26m for 26 MHz modules.
+CONFIG_XTAL_FREQ_40=y
+CONFIG_ESP_WIFI_IRAM_OPT=n
+CONFIG_ESP_WIFI_RX_IRAM_OPT=n
+CONFIG_ESP_PHY_MAX_WIFI_TX_POWER=10

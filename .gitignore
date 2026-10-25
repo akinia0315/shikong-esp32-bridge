@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+firmware/build*/
+firmware/sdkconfig
+firmware/sdkconfig.c2
+firmware/sdkconfig.c3
+firmware/sdkconfig.c2_26m
+firmware/sdkconfig.old
+firmware/managed_components/
+firmware/dependencies.lock
+*.bin
+scan*.json
