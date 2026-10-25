@@ -1,0 +1,1 @@
+# 经典 ESP32（WROOM-32 开发板，USB 口多是 CH340C/CP2102）：满功率发射，BOOT 键在 GPIO 0（Kconfig 按芯片取默认）。

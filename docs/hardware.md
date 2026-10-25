@@ -6,13 +6,18 @@
 就是网上几块钱一块、拇指大小的那种，插一个 USB 充电头放在玩具附近就行。
 
 - C3 用的是原生 USB，芯片每复位一次，电脑都会响一声断开/连接。**连着一直响，说明固件在反复重启。**
+- **经典 ESP32-WROOM-32 开发板（可选，没上过真机）**：就是 USB 口旁边是 CH340C 或 CP2102 的那种 30/38 针大板，BOOT 键在 GPIO 0。
+  它用正规模组天线，板载稳压也更扛电流，固件给它开满功率 19.5 dBm（C2/C3 是 8.5 dBm）。
+  **C3 小板经常重连、挪近路由器也不管用的话，换它是最直接的办法。** 板子大一点，耗电也多一点，插着充电头没关系。
+  CH340C 只是 USB 转串口芯片，只管刷机，和 Wi‑Fi 没关系。经典款需要电脑装 CH340 驱动（Windows 一般会自动装）。
+  有的板子刷机时要按住 BOOT 键才能进下载模式。
 - ESP32-C2 的固件也编了，晶振 26 MHz 和 40 MHz 各一份（C2 不能自动识别晶振）。**C2 没上过真机。**
 - 换别的 ESP32 也行：改 `idf.py set-target`，再看一下 `CONFIG_TOY_BUTTON_GPIO` 是不是你板子上的 BOOT 键。
 
 ## 已经替你处理掉的坑
 
 - **满功率发射会掉电重启。** 这类小板的供电撑不住 Wi‑Fi 满功率发射，一发射就复位。
-  所以发射功率压到了 8.5 dBm（`CONFIG_ESP_PHY_MAX_WIFI_TX_POWER=10` 再加 `esp_wifi_set_max_tx_power(34)`）。
+  所以 C2/C3 的发射功率压到了 8.5 dBm（`CONFIG_ESP_PHY_MAX_WIFI_TX_POWER=10` 加 `CONFIG_TOY_WIFI_TX_POWER_QDBM=34`）；经典 ESP32 默认满功率。
   代价是上行信号弱：我们这块板子插在电脑旁边 rssi −54，插到墙上的插座就只有 −68 到 −72。**容易掉线就把板子挪近路由器。**
   别去调高发射功率，那样只会把「断网」变成「重启」。
 - **关掉了 Wi‑Fi 省电模式。** C3 的 Wi‑Fi 和 BLE 共用一个射频，省电模式下容易漏收 beacon、被路由器踢掉。
@@ -39,6 +44,7 @@ idf.py -B build_c3 -DSDKCONFIG=sdkconfig.c3 build
 cd build_c3 && python -m esptool --chip esp32c3 merge_bin -o shikong-bridge-esp32c3.bin @flash_args
 ```
 
+经典 ESP32 把 `esp32c3` 换成 `esp32`、`c3` 换成别的目录名就行，按芯片区分的默认值（按钮引脚、发射功率）在 Kconfig 里。
 C2 26 MHz 版要多带一份默认配置：
 `-DSDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.esp32c2;sdkconfig.c2-26m.defaults"`。
 

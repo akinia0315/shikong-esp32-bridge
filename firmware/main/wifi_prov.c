@@ -29,10 +29,10 @@ static esp_timer_handle_t s_reconnect_timer;
 static uint16_t s_disconnects;
 static uint8_t s_last_disc_reason;
 
-// ESP32-C3 SuperMini 一类小板天线差、供电弱：满功率发射会掉电复位，压到 8.5 dBm 最稳。
-// 别为了治掉线把这个调高——如果掉线其实是供电不够，调高只会从「断网」变成「重启」。
-// 先看服务端的掉线记录分清是哪一种，再动这里。
-#define WIFI_TX_POWER_QDBM 34
+// ESP32-C3 SuperMini 一类小板天线差、供电弱：满功率发射会掉电复位，C2/C3 默认压到 8.5 dBm。
+// 别为了治掉线在小板上调高——如果掉线其实是供电不够，调高只会从「断网」变成「重启」。
+// 经典 ESP32-WROOM-32 开发板有正经模组天线和更扛电流的稳压，默认满功率（见 Kconfig）。
+#define WIFI_TX_POWER_QDBM CONFIG_TOY_WIFI_TX_POWER_QDBM
 
 // 省电模式会让芯片在两个 beacon 之间关收音机；C3 的 Wi-Fi 和 BLE 还共用同一个射频，
 // 一边广播一边省电，漏 beacon、被 AP 老化踢掉都会变多。插着电源根本不用省这点电。

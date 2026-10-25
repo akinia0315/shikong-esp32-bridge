@@ -19,7 +19,7 @@
 或者把 `shikong.proto` 接进原仓库的 MCP，见下面「Mac 当桥」。
 
 ```
-失控 4.0 ◄── BLE 广播 ── ESP32-C3 开发板 ── Wi‑Fi 长轮询 ──► 你的服务器（shikong.server）◄── HTTP ── 你 / 你的 AI
+失控 4.0 ◄── BLE 广播 ── ESP32 开发板 ──── Wi‑Fi 长轮询 ──► 你的服务器（shikong.server）◄── HTTP ── 你 / 你的 AI
                          （放在玩具旁边）                    （家里电脑、NAS、VPS 都行）
 ```
 
@@ -28,11 +28,15 @@
 | | |
 |---|---|
 | **实测** | **ESP32-C3 SuperMini**（QFN32，4 MB 内置 flash，原生 USB，板载 BOOT 键）|
+| **可选，Wi‑Fi 应该更稳（没上过真机）** | **经典 ESP32-WROOM-32 开发板**（USB 口常见 CH340C / CP2102 的那种 30/38 针大板）|
 | 也编了（没上过真机）| ESP32-C2，晶振 26 MHz / 40 MHz 各一份 |
-| 其它 | 一根能传数据的 USB-C 线、一个 USB 充电头 |
+| 其它 | 一根能传数据的 USB 线、一个 USB 充电头 |
 
-C3 SuperMini 小板满功率发射会掉电重启，固件把 Wi‑Fi 发射功率压到了 8.5 dBm。
-板子离路由器远一点就容易掉线，放近一点最管用。细节见 [docs/hardware.md](docs/hardware.md)。
+C3 SuperMini 体积小，但天线挤在元件旁边、稳压也弱，满功率发射会掉电重启。
+所以固件把它的 Wi‑Fi 发射功率压到了 8.5 dBm，板子离路由器一远就容易掉线。
+**经常重连的话，可以换经典 ESP32-WROOM-32 开发板**：它用的是正规模组天线，稳压更扛电流，
+固件给它开满功率（19.5 dBm）。CH340C 只是 USB 转串口芯片，管刷机用，跟 Wi‑Fi 没关系，挑板子时看 WROOM-32 就行。
+细节见 [docs/hardware.md](docs/hardware.md)。
 
 ## 快速开始（ESP32 桥）
 
@@ -51,7 +55,7 @@ python -m shikong.server --host 0.0.0.0 --port 8765
 运行 `python3 flash.py`，跟着提示走。它会自己认芯片、选固件。也可以手动刷：
 
 ```bash
-python -m esptool --chip esp32c3 --port <串口> write-flash 0x0 shikong-bridge-esp32c3.bin
+python -m esptool --chip esp32c3 --port <串口> write-flash 0x0 shikong-bridge-esp32c3.bin   # 经典款换成 esp32 / shikong-bridge-esp32.bin
 ```
 
 **3. 配网**：板子第一次上电会开一个没有密码的 Wi‑Fi `Shikong-Bridge`。手机连上后打开 `http://192.168.4.1/`，

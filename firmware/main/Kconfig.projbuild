@@ -12,7 +12,17 @@ config TOY_AP_SSID
 
 config TOY_BUTTON_GPIO
     int "Emergency-stop button GPIO (BOOT button)"
+    default 0 if IDF_TARGET_ESP32
     default 9
+
+config TOY_WIFI_TX_POWER_QDBM
+    int "Wi-Fi max TX power, in 0.25 dBm"
+    range 8 84
+    default 78 if IDF_TARGET_ESP32
+    default 34
+    help
+        C3 SuperMini-class boards brown out at full power, so C2/C3 default to 34 (8.5 dBm).
+        Classic ESP32-WROOM-32 dev boards have a real module antenna and a stronger regulator: 78 (19.5 dBm).
 
 config TOY_POLL_WAIT_SECONDS
     int "Long-poll hold time requested from the server"

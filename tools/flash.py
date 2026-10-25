@@ -18,12 +18,14 @@ BIN_FOR = {
     ("ESP32-C2", 40): "shikong-bridge-esp32c2-40mhz.bin",
     ("ESP32-C2", 26): "shikong-bridge-esp32c2-26mhz.bin",
     ("ESP32-C3", None): "shikong-bridge-esp32c3.bin",
+    ("ESP32", None): "shikong-bridge-esp32.bin",
 }
 # 升级用：只刷 app 分区（0x10000），Wi-Fi 配置和令牌都在 nvs 里，不会被动到。
 APP_BIN_FOR = {
     ("ESP32-C2", 40): "shikong-bridge-esp32c2-40mhz-app-only.bin",
     ("ESP32-C2", 26): "shikong-bridge-esp32c2-26mhz-app-only.bin",
     ("ESP32-C3", None): "shikong-bridge-esp32c3-app-only.bin",
+    ("ESP32", None): "shikong-bridge-esp32-app-only.bin",
 }
 APP_OFFSET = "0x10000"
 KNOWN_USB = {
@@ -169,7 +171,7 @@ def pick_bin(name, xtal, app_only=False):
     key = (name, xtal if "C2" in name else None)
     filename = (APP_BIN_FOR if app_only else BIN_FOR).get(key)
     if not filename:
-        say(f"这块板子是 {name}，我这里没有它的固件。把这行发给 Fable：{name} xtal={xtal}")
+        say(f"这块板子是 {name}，我这里没有它的固件。去 GitHub 提个 issue，带上这行：{name} xtal={xtal}")
         finish(1)
     path = os.path.join(HERE, filename)
     if not os.path.exists(path):
@@ -248,7 +250,7 @@ def main():
     ok = flash(port, chip_arg, path, APP_OFFSET if app_only else "0x0")
     say()
     if not ok:
-        say("两种速度都没刷成。把上面的红字/英文报错截图发给 Fable。")
+        say("两种速度都没刷成。把上面的报错截图，去 GitHub 提个 issue。")
         finish(1)
     say("✅ 刷好了！板子已经自动重启。")
     say()
